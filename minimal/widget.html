@@ -1,81 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
-    <title>Greetings</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        /* General body styling */
-        body {
-            font-variant-caps: normal;
-            background-color: #000000; 
-        }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;600&display=swap" rel="stylesheet">
 
-        /* DM Sans font styling */
-        .dm-sans {
-            font-family: "DM Sans", sans-serif;
-            font-optical-sizing: auto;
-            font-style: normal;
-        }
+<title>Greetings Widget</title>
 
-        /* Widget styling */
-        .widget {
-            padding: 5px 5px;
-            color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            max-width: 95%;
-            margin: auto;
-        }
+<style>
+    body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #000000; /* dark background */
+        font-family: "DM Sans", sans-serif;
+    }
 
-        /* Greeting text styling */
-        .greet {
-            font-size: 2em;
-        }
+    .widget {
+        padding: 20px 30px;
+        color: #ffffff;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
 
-        /* Date styling */
-        .date {
-            font-family: "DM Sans", sans-serif;
-            font-size: 16px;
-        }
+    .greet {
+        font-size: 28px;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
 
-        /* Clock styling */
-        .clock {
-            font-family: "DM Sans", sans-serif;
-            font-size: 16px;
-        }
+    .date {
+        font-size: 14px;
+        margin-bottom: 10px;
+        opacity: 0.8;
+    }
 
-        /* Time and colon styling */
-        .time {
-            display: inline-block;
-            min-width: 20px;
-        }
+    .clock {
+        font-size: 18px;
+        letter-spacing: 1px;
+    }
 
-        .colon {
-            font-size: 1em;
-            display: inline-block;
-        }
-    </style>
+    .time {
+        display: inline-block;
+        min-width: 25px;
+    }
+</style>
+
 </head>
 <body>
 
-<div class="container">
-    <div class="widget">
-        <div class="greet dm-sans" id="greet"></div>
-        <div class="date" id="date"></div>
-        <div class="clock">
-            <div class="time" id="hour"></div>
-            <div class="colon">:</div>
-            <div class="time" id="min"></div>
-            <div class="colon">:</div>
-            <div class="time" id="sec"></div>
-        </div>
+<div class="widget">
+    <div class="greet" id="greet"></div>
+    <div class="date" id="date"></div>
+    <div class="clock">
+        <span class="time" id="hour"></span> :
+        <span class="time" id="min"></span> :
+        <span class="time" id="sec"></span>
     </div>
 </div>
 
@@ -84,58 +72,43 @@ function displayGreetings(today) {
     let hrs = today.getHours();
     let name = "Huzy";
     let greet;
+
     if (hrs < 12)
         greet = 'Good Morning ' + name;
-    else if (hrs >= 12 && hrs <= 17)
+    else if (hrs < 17)
         greet = 'Good Afternoon ' + name;
-    else if (hrs >= 17 && hrs <= 24)
+    else
         greet = 'Good Evening ' + name;
+
     document.getElementById('greet').innerHTML = greet;
 }
 
 function displayDate(today) {
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const monthNames = ["January", "February", "March", "April", "May", "June",
+    const months = ["January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"];
 
-    let dayName = days[today.getDay()];
-    let monthName = monthNames[today.getMonth()];
-    let date = today.getDate();
-    let year = today.getFullYear();
-    document.getElementById('date').innerHTML = dayName + ", " + monthName + " " + date + " " + year;
+    let text = `${days[today.getDay()]}, ${months[today.getMonth()]} ${today.getDate()} ${today.getFullYear()}`;
+    document.getElementById('date').innerHTML = text;
 }
 
 function displayClock(today) {
-    let hour = padZeros(twelveHour(today.getHours()));
-    let minutes = padZeros(today.getMinutes());
-    let seconds = padZeros(today.getSeconds());
+    let hour = twelveHour(today.getHours());
+    let min = padZeros(today.getMinutes());
+    let sec = padZeros(today.getSeconds());
+    let period = today.getHours() >= 12 ? "PM" : "AM";
 
-    if (today.getHours() >= 12) {
-        seconds += " pm";
-    } else {
-        seconds += " am";
-    }
-
-    document.getElementById('hour').innerHTML = hour;
-    document.getElementById('min').innerHTML = minutes;
-    document.getElementById('sec').innerHTML = seconds;
+    document.getElementById('hour').innerHTML = padZeros(hour);
+    document.getElementById('min').innerHTML = min;
+    document.getElementById('sec').innerHTML = sec + " " + period;
 }
 
 function twelveHour(hour) {
-    if (hour > 12) {
-        return hour - 12;
-    } else if (hour === 0) {
-        return 12;
-    } else {
-        return hour;
-    }
+    return hour % 12 || 12;
 }
 
 function padZeros(num) {
-    if (num < 10) {
-        num = '0' + num;
-    }
-    return num;
+    return num < 10 ? '0' + num : num;
 }
 
 function displayWidget() {
@@ -143,7 +116,7 @@ function displayWidget() {
     displayGreetings(today);
     displayDate(today);
     displayClock(today);
-    setTimeout(displayWidget, 500);
+    setTimeout(displayWidget, 1000);
 }
 
 displayWidget();
